@@ -1,7 +1,6 @@
 package br.com.senai.cardapiosmktplaceapi.entity;
 
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
-import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,9 +17,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "categorias")
-@Entity(name = "Categoria")
-public class Categoria {
+@Table(name = "secoes")
+@Entity(name = "Secao")
+public class Secao {
 	
 	@Id
 	@Column(name = "id")
@@ -28,18 +27,13 @@ public class Categoria {
 	@EqualsAndHashCode.Include
 	private Integer id;
 	
-	@Size(max = 100, message = "O nome da categoria não deve conter mais de 100 caracteres")
-	@NotBlank(message = "O nome da categoria é obrigatório")
+	@Size(max = 100, message = "O nome da seção não deve conter mais de 100 caracteres")
+	@NotBlank(message = "O nome da seção é obrigatório")
 	@Column(name = "nome")
 	private String nome;
 	
 	@Enumerated(value = EnumType.STRING)
-	@NotNull(message = "O tipo da categoria não deve ser nulo")
-	@Column(name = "tipo")
-	private TipoDeCategoria tipo;
-	
-	@Enumerated(value = EnumType.STRING)
-	@NotNull(message = "O status da categoria não deve ser nulo")
+	@NotNull(message = "O status da seção não deve ser nulo")
 	@Column(name = "status")
 	private Status status;
 
