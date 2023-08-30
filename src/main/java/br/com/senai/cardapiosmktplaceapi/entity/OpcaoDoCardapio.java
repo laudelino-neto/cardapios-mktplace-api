@@ -2,7 +2,6 @@ package br.com.senai.cardapiosmktplaceapi.entity;
 
 import java.math.BigDecimal;
 
-import br.com.senai.cardapiosmktplaceapi.Cardapio;
 import br.com.senai.cardapiosmktplaceapi.entity.composite.OpcaoDoCardapioId;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Confirmacao;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;

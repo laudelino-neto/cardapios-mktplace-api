@@ -1,6 +1,5 @@
-package br.com.senai.cardapiosmktplaceapi;
+package br.com.senai.cardapiosmktplaceapi.entity;
 
-import br.com.senai.cardapiosmktplaceapi.entity.Restaurante;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
