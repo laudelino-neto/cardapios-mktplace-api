@@ -20,14 +20,20 @@ public interface CategoriasRepository extends JpaRepository<Categoria, Integer>{
 			+ "WHERE Upper(c.nome) LIKE Upper(:nome) "
 			+ "AND c.status = :status "
 			+ "AND c.tipo = :tipo "
-			+ "ORDER BY c.nome ")
+			+ "ORDER BY c.nome ",
+			countQuery = 
+				"SELECT Count(c) "
+				+ "FROM Categoria c "
+				+ "WHERE Upper(c.nome) LIKE Upper(:nome) "
+				+ "AND c.status = :status "
+				+ "AND c.tipo = :tipo ")
 	public Page<Categoria> listarPor(String nome, Status status, 
 			TipoDeCategoria tipo, Pageable paginacao);
 	
 	@Query(value = 
 			"SELECT c "
 			+ "FROM Categoria c "
-			+ "WHERE Upper(c.nome) = :nome ")
+			+ "WHERE Upper(c.nome) = Upper(:nome) ")
 	public Categoria buscarPor(String nome);
 	
 	@Query(value = 

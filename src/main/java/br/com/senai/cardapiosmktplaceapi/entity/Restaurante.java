@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -54,5 +55,19 @@ public class Restaurante {
 	@NotNull(message = "O status do endereço não deve ser nulo")
 	@Column(name = "status")
 	private Status status;
+	
+	public Restaurante() {
+		this.status = Status.A;
+	}
+	
+	@Transient
+	public boolean isPersistido() {
+		return getId() != null && getId() > 0;
+	}
+	
+	@Transient
+	public boolean isAtivo() {
+		return getStatus() == Status.A;
+	}
 
 }

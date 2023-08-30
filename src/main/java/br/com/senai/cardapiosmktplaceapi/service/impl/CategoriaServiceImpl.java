@@ -61,11 +61,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 	
 	@Override
 	public Categoria excluirPor(Integer id) {
-		Categoria categoriaEncontrada = repository.buscarPor(id);
-		Preconditions.checkNotNull(categoriaEncontrada, 
-				"Não existe categoria para o id informado");
-		Preconditions.checkArgument(categoriaEncontrada.isAtiva(), 
-				"A categoria está inativa");
+		Categoria categoriaEncontrada = buscarPor(id);		
 		//TODO Contar numero de restaurantes pelo id da categoria
 		this.repository.deleteById(id);
 		return categoriaEncontrada;
