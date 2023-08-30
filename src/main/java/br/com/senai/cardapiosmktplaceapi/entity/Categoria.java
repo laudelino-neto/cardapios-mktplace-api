@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -42,5 +43,19 @@ public class Categoria {
 	@NotNull(message = "O status da categoria não deve ser nulo")
 	@Column(name = "status")
 	private Status status;
+	
+	public Categoria() {
+		this.status = Status.A;
+	}
+	
+	@Transient
+	public boolean isPersistida() {
+		return getId() != null && getId() > 0;
+	}
+	
+	@Transient
+	public boolean isAtiva() {
+		return getStatus() == Status.A;
+	}
 
 }
