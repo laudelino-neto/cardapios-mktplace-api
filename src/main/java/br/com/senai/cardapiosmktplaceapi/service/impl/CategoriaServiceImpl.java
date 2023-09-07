@@ -11,6 +11,7 @@ import br.com.senai.cardapiosmktplaceapi.entity.Categoria;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
 import br.com.senai.cardapiosmktplaceapi.repository.CategoriasRepository;
+import br.com.senai.cardapiosmktplaceapi.repository.RestaurantesRepository;
 import br.com.senai.cardapiosmktplaceapi.service.CategoriaService;
 import jakarta.transaction.Transactional;
 
@@ -19,6 +20,9 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Autowired
 	private CategoriasRepository repository;
+	
+	@Autowired
+	private RestaurantesRepository restaurantesRepository;
 	
 	@Override
 	public Categoria salvar(Categoria categoria) {		
@@ -61,8 +65,10 @@ public class CategoriaServiceImpl implements CategoriaService {
 	
 	@Override
 	public Categoria excluirPor(Integer id) {
-		Categoria categoriaEncontrada = buscarPor(id);		
-		//TODO Contar numero de restaurantes pelo id da categoria
+		Categoria categoriaEncontrada = buscarPor(id);
+		Long qtdeDeRestaurantesVinculados = restaurantesRepository.contarPor(id);
+		Preconditions.checkArgument(qtdeDeRestaurantesVinculados == 0, 
+				"A categoria não pode ser removida por existirem restaurantes vinculados a mesma");
 		this.repository.deleteById(id);
 		return categoriaEncontrada;
 	}

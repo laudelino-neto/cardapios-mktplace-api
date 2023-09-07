@@ -25,8 +25,7 @@ public interface RestaurantesRepository extends JpaRepository<Restaurante, Integ
 				"SELECT Count(r) "
 				+ "FROM Restaurante r "
 				+ "WHERE Upper(r.nome) LIKE Upper(:nome) "
-				+ "AND r.status = :status "
-				+ "AND r.tipo = :tipo ")
+				+ "AND r.status = :status ")
 	public Page<Restaurante> listarPor(String nome, 
 			Categoria categoria, Pageable paginacao);
 	
@@ -38,7 +37,7 @@ public interface RestaurantesRepository extends JpaRepository<Restaurante, Integ
 	
 	@Query(value = 
 			"SELECT r "
-			+ "FROM Restaurante r"
+			+ "FROM Restaurante r "
 			+ "JOIN FETCH r.categoria  "
 			+ "WHERE r.id =: id ")
 	public Restaurante buscarPor(Integer id);

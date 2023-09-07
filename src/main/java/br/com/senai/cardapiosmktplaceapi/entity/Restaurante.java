@@ -20,11 +20,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "restaurantes")
 @Entity(name = "Restaurante")
+@ToString
 public class Restaurante {
 	
 	@Id
@@ -42,10 +44,12 @@ public class Restaurante {
 	@Column(name = "descricao")
 	private String descricao;
 		
+	@ToString.Exclude
 	@Embedded
 	@Valid
 	private Endereco endereco;
 	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_categoria")
 	@NotNull(message = "A categoria é obrigatória")

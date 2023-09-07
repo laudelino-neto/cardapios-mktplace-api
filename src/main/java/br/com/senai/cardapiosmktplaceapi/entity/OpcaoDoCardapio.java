@@ -20,23 +20,27 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "opcoes_cardapios")
 @Entity(name = "OpcaoDoCardapio")
+@ToString
 public class OpcaoDoCardapio {
 
 	@EmbeddedId
 	@NotNull(message = "O id da opção do cardápio é obrigatório")
 	private OpcaoDoCardapioId id;
 	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("idDoCardapio")
 	@JoinColumn(name = "id_cardapio")
 	@NotNull(message = "O cardápio da opção é obrigatório")
 	private Cardapio cardapio;
 	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("idDaOpcao")
 	@JoinColumn(name = "id_opcao")
@@ -58,9 +62,14 @@ public class OpcaoDoCardapio {
 	@Column(name = "recomendado")	
 	private Confirmacao recomendado;
 	
+	@ToString.Exclude
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_secao")
 	@NotNull(message = "A seção é obrigatória")
 	private Secao secao;
+	
+	public OpcaoDoCardapio() {
+		this.status = Status.A;
+	}
 	
 }
