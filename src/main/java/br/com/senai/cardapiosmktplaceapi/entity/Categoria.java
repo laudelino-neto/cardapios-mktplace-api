@@ -1,5 +1,7 @@
 package br.com.senai.cardapiosmktplaceapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
 import jakarta.persistence.Column;
@@ -48,11 +50,13 @@ public class Categoria {
 		this.status = Status.A;
 	}
 	
+	@JsonIgnore
 	@Transient
 	public boolean isPersistida() {
 		return getId() != null && getId() > 0;
 	}
 	
+	@JsonIgnore
 	@Transient
 	public boolean isAtiva() {
 		return getStatus() == Status.A;

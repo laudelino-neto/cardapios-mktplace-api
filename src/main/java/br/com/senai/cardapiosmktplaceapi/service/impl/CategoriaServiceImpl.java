@@ -13,7 +13,6 @@ import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
 import br.com.senai.cardapiosmktplaceapi.repository.CategoriasRepository;
 import br.com.senai.cardapiosmktplaceapi.repository.RestaurantesRepository;
 import br.com.senai.cardapiosmktplaceapi.service.CategoriaService;
-import jakarta.transaction.Transactional;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
@@ -38,7 +37,6 @@ public class CategoriaServiceImpl implements CategoriaService {
 	}
 
 	@Override
-	@Transactional
 	public void atualizarStatusPor(Integer id, Status status) {
 		Categoria categoriaEncontrada = repository.buscarPor(id);
 		Preconditions.checkNotNull(categoriaEncontrada, 
