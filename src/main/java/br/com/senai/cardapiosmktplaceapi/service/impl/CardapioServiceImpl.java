@@ -66,8 +66,8 @@ public class CardapioServiceImpl implements CardapioService {
 			opcaoDoCardapio.setPreco(novaOpcao.getPreco());
 			opcaoDoCardapio.setRecomendado(novaOpcao.getRecomendado());						
 			cardapioSalvo.getOpcoes().add(opcaoDoCardapio);			
-			this.repository.saveAndFlush(cardapioSalvo);			
 		}		
+		this.repository.save(cardapioSalvo);			
 		return repository.buscarPor(cardapioSalvo.getId());
 	}
 	
@@ -116,37 +116,44 @@ public class CardapioServiceImpl implements CardapioService {
 
 	@Override
 	public Cardapio alterar(CardapioSalvo cardapioSalvo) {
-		Cardapio cardapio = repository.buscarPor(cardapioSalvo.getId());
+		Restaurante restaurante = restaurantesRepository.buscarPor(
+				cardapioSalvo.getRestaurante().getId());
+		Cardapio cardapio = repository.buscarPor(cardapioSalvo.getId());		
 		cardapio.setNome(cardapioSalvo.getNome());
 		cardapio.setDescricao(cardapioSalvo.getDescricao());
-		cardapio.setRestaurante(cardapioSalvo.getRestaurante());
+		cardapio.setRestaurante(restaurante);
 		cardapio.setStatus(cardapioSalvo.getStatus());
 		Cardapio cardapioAtualizado = repository.saveAndFlush(cardapio);
-		return cardapioAtualizado;
+		return buscarPor(cardapioAtualizado.getId());
+	}
+	
+	private void atualizarPrecosDas(List<OpcaoDoCardapio> opcoesDoCardapio) {
+		for (OpcaoDoCardapio opcaoDoCardapio : opcoesDoCardapio) {
+			if (opcaoDoCardapio.getOpcao().isEmPromocao()) {
+				BigDecimal divisor = new BigDecimal(100);
+				
+				BigDecimal percentualDeDesconto = opcaoDoCardapio.getOpcao().getPercentualDeDesconto(); 
+				
+				BigDecimal valorDescontado = opcaoDoCardapio.getPreco().multiply(
+						percentualDeDesconto.divide(divisor));
+				
+				BigDecimal preco = opcaoDoCardapio.getPreco().subtract(
+						valorDescontado).setScale(2, RoundingMode.CEILING);
+				
+				opcaoDoCardapio.setPreco(preco);
+				
+			}
+		}
 	}
 
 	@Override
 	public Page<Cardapio> listarPor(Restaurante restaurante, Pageable paginacao) {
 		Page<Cardapio> cardapios = repository.listarPor(restaurante, paginacao);
 		for (Cardapio cardapio : cardapios.getContent()) {
-			for (OpcaoDoCardapio opcaoDoCardapio : cardapio.getOpcoes()) {
-				if (opcaoDoCardapio.getOpcao().isEmPromocao()) {
-					BigDecimal preco = opcaoDoCardapio.getPreco().subtract(
-							aplicarDescontoNa(opcaoDoCardapio));
-					opcaoDoCardapio.setPreco(preco);
-				}
-			}
+			this.atualizarPrecosDas(cardapio.getOpcoes());
 		}
 		return cardapios;
-	}
-	
-	private BigDecimal aplicarDescontoNa(OpcaoDoCardapio opcaoDoCardapio) {
-		BigDecimal divisor = new BigDecimal(100);
-		BigDecimal valorDescontado = opcaoDoCardapio.getPreco().multiply(
-				opcaoDoCardapio.getOpcao().getPercentualDeDesconto()
-				.divide(divisor, RoundingMode.CEILING));
-		return opcaoDoCardapio.getPreco().subtract(valorDescontado);
-	}
+	}	
 	
 	@Override
 	public Cardapio buscarPor(Integer id) {
@@ -155,13 +162,14 @@ public class CardapioServiceImpl implements CardapioService {
 				"Não foi encontrado cardápio para o id informado");
 		Preconditions.checkArgument(cardapioEncontrado.isAtivo(), 
 				"O cardápio está inativo");
+		this.atualizarPrecosDas(cardapioEncontrado.getOpcoes());
 		return cardapioEncontrado;
 	}
 
 	@Override
 	public void atualizarStatusPor(Integer id, Status status) {
 		Cardapio cardapio = buscarPor(id);
-		Preconditions.checkArgument(cardapio.getStatus() == status, 
+		Preconditions.checkArgument(cardapio.getStatus() != status, 
 				"O status informado já foi salvo anteriormente");
 		this.repository.atualizarPor(id, status);
 	}

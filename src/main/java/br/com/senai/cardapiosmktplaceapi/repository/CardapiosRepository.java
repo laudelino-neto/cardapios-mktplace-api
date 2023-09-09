@@ -20,7 +20,8 @@ public interface CardapiosRepository extends JpaRepository<Cardapio, Integer>{
 			+ "JOIN FETCH c.restaurante r "
 			+ "JOIN FETCH c.opcoes oc "
 			+ "JOIN FETCH oc.opcao o "
-			+ "WHERE r = :restaurante "
+			+ "JOIN FETCH oc.secao s "
+			+ "WHERE c.restaurante = :restaurante "
 			+ "ORDER BY oc.recomendado DESC, o.nome ",
 			countQuery = 
 				"SELECT Count(c) "
@@ -34,6 +35,7 @@ public interface CardapiosRepository extends JpaRepository<Cardapio, Integer>{
 			+ "JOIN FETCH c.restaurante r "
 			+ "JOIN FETCH c.opcoes oc "
 			+ "JOIN FETCH oc.opcao o "
+			+ "JOIN FETCH oc.secao s "
 			+ "WHERE c.id = :id "
 			+ "ORDER BY oc.recomendado DESC, o.nome ")
 	public Cardapio buscarPor(Integer id);

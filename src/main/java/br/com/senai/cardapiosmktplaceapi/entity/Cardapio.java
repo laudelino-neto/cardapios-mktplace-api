@@ -58,7 +58,7 @@ public class Cardapio {
 	private Restaurante restaurante;
 	
 	@OneToMany(mappedBy = "cardapio", fetch = FetchType.LAZY, 
-			cascade = CascadeType.PERSIST, orphanRemoval = true)
+			cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OpcaoDoCardapio> opcoes;
 	
 	public Cardapio() {

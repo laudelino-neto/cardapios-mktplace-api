@@ -39,7 +39,7 @@ public interface RestaurantesRepository extends JpaRepository<Restaurante, Integ
 			"SELECT r "
 			+ "FROM Restaurante r "
 			+ "JOIN FETCH r.categoria  "
-			+ "WHERE r.id =: id ")
+			+ "WHERE r.id = :id ")
 	public Restaurante buscarPor(Integer id);
 	
 	@Modifying
