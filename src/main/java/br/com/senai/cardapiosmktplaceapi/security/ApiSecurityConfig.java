@@ -80,7 +80,9 @@ public class ApiSecurityConfig {
 					.requestMatchers(HttpMethod.PATCH, "/cardapios/**")					
 						.hasAnyAuthority("LOJISTA")	
 					.requestMatchers("/cardapios/**")
-						.hasAnyAuthority("CLIENTE", "LOJISTA")				
+						.hasAnyAuthority("CLIENTE", "LOJISTA")
+					.requestMatchers("/categorias/**")
+						.hasAnyAuthority("LOJISTA")	
 				.anyRequest().authenticated())
 			.sessionManagement(manager -> 
 				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
