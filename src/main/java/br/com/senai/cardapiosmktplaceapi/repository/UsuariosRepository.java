@@ -12,7 +12,6 @@ public interface UsuariosRepository extends JpaRepository<Usuario, String>{
 	@Query(value = 
 			"SELECT u "
 			+ "FROM Usuario u "
-			+ "JOIN FETCH u.papel p "
 			+ "WHERE u.login = :login ")
 	public Usuario buscarPor(String login);
 	

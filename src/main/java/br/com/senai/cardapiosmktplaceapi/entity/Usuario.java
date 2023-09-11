@@ -1,18 +1,17 @@
 package br.com.senai.cardapiosmktplaceapi.entity;
 
+import br.com.senai.cardapiosmktplaceapi.entity.enums.Papel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -35,10 +34,9 @@ public class Usuario {
 	@Column(name = "nome")
 	private String nome;
 	
-	@ToString.Exclude
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_papel")
-	@NotNull(message = "O papel é obrigatório")
+	@Enumerated(value = EnumType.STRING)
+	@NotNull(message = "O papel do usuário é obrigatório")
+	@Column(name = "papel")
 	private Papel papel;
 
 }

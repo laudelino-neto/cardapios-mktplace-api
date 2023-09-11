@@ -26,7 +26,7 @@ public class CredencialDeAcesso implements UserDetails{
 		this.login = usuario.getLogin();
 		this.senha = usuario.getSenha();
 		this.permissoes = new ArrayList<GrantedAuthority>();
-		this.permissoes.add(new SimpleGrantedAuthority(usuario.getPapel().getNome()));
+		this.permissoes.add(new SimpleGrantedAuthority(usuario.getPapel().toString()));
 	}
 
 	@Override	
