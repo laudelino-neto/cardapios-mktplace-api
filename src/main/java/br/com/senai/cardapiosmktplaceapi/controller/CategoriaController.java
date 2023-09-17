@@ -39,7 +39,6 @@ public class CategoriaController {
 	@Qualifier("categoriaServiceProxy")
 	private CategoriaService service;	
 	
-	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> inserir(
