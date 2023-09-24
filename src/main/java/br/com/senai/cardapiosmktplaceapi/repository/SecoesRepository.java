@@ -7,5 +7,5 @@ import br.com.senai.cardapiosmktplaceapi.entity.Secao;
 
 @Repository
 public interface SecoesRepository extends JpaRepository<Secao, Integer>{
-
+	
 }
