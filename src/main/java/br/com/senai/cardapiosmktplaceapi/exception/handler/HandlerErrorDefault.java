@@ -1,13 +1,16 @@
-package br.com.senai.cardapiosmktplaceapi.exception;
+package br.com.senai.cardapiosmktplaceapi.exception.handler;
 
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,17 +22,39 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 
+import br.com.senai.cardapiosmktplaceapi.exception.BusinessException;
+import br.com.senai.cardapiosmktplaceapi.exception.ConverterException;
+import br.com.senai.cardapiosmktplaceapi.exception.ErroDaApi;
+import br.com.senai.cardapiosmktplaceapi.exception.IntegracaoException;
+import br.com.senai.cardapiosmktplaceapi.exception.RegistroNaoEncontradoException;
 import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 @RestControllerAdvice
 public class HandlerErrorDefault {
+	
+	@Autowired
+	private ErrorConverter errorConverter;
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public Map<String, Object> handle(){
-		return criarMapDeErro(ErroDaApi.BODY_INVALIDO, 
+		return errorConverter.criarMapDeErro(ErroDaApi.BODY_INVALIDO, 
 				"O corpo (body) da requisição possui erros ou não existe");
+	}
+	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ExceptionHandler(BadCredentialsException.class)
+	public Map<String, Object> handle(BadCredentialsException bde){
+		return errorConverter.criarMapDeErro(ErroDaApi.CREDENCIAIS_INVALIDAS, 
+				"Login e/ou senha inválidos");
+	}	
+	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(CredentialsExpiredException.class)
+	public Map<String, Object> handle(CredentialsExpiredException eje){
+		return errorConverter.criarMapDeErro(ErroDaApi.TOKEN_EXPIRADO, 
+				"Token fora da validade (expirado)");
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -37,7 +62,7 @@ public class HandlerErrorDefault {
 	public Map<String, Object> handle(InvalidDefinitionException ide){
 		String atributo = ide.getPath().get(ide.getPath().size() - 1).getFieldName();		
 		String msgDeErro = "O atributo '" + atributo + "' possui formato inválido";
-	    return criarMapDeErro(ErroDaApi.FORMATO_INVALIDO, msgDeErro);
+	    return errorConverter.criarMapDeErro(ErroDaApi.FORMATO_INVALIDO, msgDeErro);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -75,67 +100,67 @@ public class HandlerErrorDefault {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(IllegalArgumentException.class)
 	public Map<String, Object> handle(IllegalArgumentException ie){
-		return criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, ie.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, ie.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NullPointerException.class)
 	public Map<String, Object> handle(NullPointerException npe){
-		return criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, npe.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, npe.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(BusinessException.class)
 	public Map<String, Object> handle(BusinessException be){
-		return criarMapDeErro(ErroDaApi.REGRA_VIOLADA, be.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.REGRA_VIOLADA, be.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MissingPathVariableException.class)
 	public Map<String, Object> handle(MissingPathVariableException mpve){
-		return criarMapDeErro(ErroDaApi.PRECONDICAO_REQUERIDA, mpve.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.PRECONDICAO_REQUERIDA, mpve.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public Map<String, Object> handle(MethodArgumentTypeMismatchException matme){
-		return criarMapDeErro(ErroDaApi.TIPO_PARAMETRO_INVALIDO, matme.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.TIPO_PARAMETRO_INVALIDO, matme.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public Map<String, Object> handle(HttpRequestMethodNotSupportedException hrmnse){
-		return criarMapDeErro(ErroDaApi.METODO_HTTP_NAO_SUPORTADO, hrmnse.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.METODO_HTTP_NAO_SUPORTADO, hrmnse.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public Map<String, Object> handle(MissingServletRequestParameterException mrpe){
-		return criarMapDeErro(ErroDaApi.PARAMETRO_OBRIGATORIO, mrpe.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.PARAMETRO_OBRIGATORIO, mrpe.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(RegistroNaoEncontradoException.class)
 	public Map<String, Object> handle(RegistroNaoEncontradoException rnee){
-		return criarMapDeErro(ErroDaApi.REGISTRO_NAO_ENCONTRADO, rnee.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.REGISTRO_NAO_ENCONTRADO, rnee.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ConverterException.class)
 	public Map<String, Object> handle(ConverterException ce){
-		return criarMapDeErro(ErroDaApi.CONVERSAO_INVALIDA, ce.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.CONVERSAO_INVALIDA, ce.getMessage());
 	}	
 	
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(IntegracaoException.class)
 	public Map<String, Object> handle(IntegracaoException ie){
-		return criarMapDeErro(ErroDaApi.INTEGRACAO_INVALIDA, ie.getMessage());
+		return errorConverter.criarMapDeErro(ErroDaApi.INTEGRACAO_INVALIDA, ie.getMessage());
 	}	
 	
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(InvalidDataAccessResourceUsageException.class)
 	public Map<String, Object> handle(InvalidDataAccessResourceUsageException ie){
-		return criarMapDeErro(ErroDaApi.INTEGRACAO_INVALIDA, 
+		return errorConverter.criarMapDeErro(ErroDaApi.INTEGRACAO_INVALIDA, 
 				"Ocorreu um erro de integração com a Api externa");
 	}	
 	
@@ -143,25 +168,8 @@ public class HandlerErrorDefault {
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public Map<String, Object> handlePSQLExceptions(
 			DataIntegrityViolationException dve){
-	    return criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, 
+	    return errorConverter.criarMapDeErro(ErroDaApi.PARAMETRO_INVALIDO, 
 	    		"Ocorreu um erro de integridade referencial na base de dados");
-	}
-	
-	private Map<String, Object> criarMapDeErro(ErroDaApi erroDaApi, String msgDeErro){			
-		
-		JSONObject body = new JSONObject();					
-		
-		JSONObject detalhe = new JSONObject();
-		detalhe.put("mensagem", msgDeErro);
-		detalhe.put("codigo", erroDaApi.getCodigo());
-		
-		JSONArray detalhes = new JSONArray();
-		detalhes.put(detalhe);
-		
-		body.put("erros", detalhes);
-		
-		return body.toMap();
-		
-	}
+	}	
 	
 }

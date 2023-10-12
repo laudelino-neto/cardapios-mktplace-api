@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import br.com.senai.cardapiosmktplaceapi.exception.handler.AcessoNaoAutorizadoHandler;
 import br.com.senai.cardapiosmktplaceapi.service.impl.CredencialDeAcessoServiceImpl;
 
 @Configuration
@@ -32,6 +33,8 @@ public class ApiSecurityConfig {
 	@Autowired
 	private CredencialDeAcessoServiceImpl service;
 	
+	@Autowired
+	private AcessoNaoAutorizadoHandler acessoNaoAutorizadoHandler;
 
 	@Bean
     public PasswordEncoder passwordEncoder(){
@@ -52,7 +55,8 @@ public class ApiSecurityConfig {
         return authenticationProvider;
     }
 	
-	private UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+	@Bean
+	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
 	    CorsConfiguration corsConfiguration = new CorsConfiguration();
 	    corsConfiguration.applyPermitDefaultValues(); 
 	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
@@ -81,13 +85,18 @@ public class ApiSecurityConfig {
 					.requestMatchers("/cardapios/**")
 						.hasAnyAuthority("CLIENTE", "LOJISTA")
 					.requestMatchers("/categorias/**")
+						.hasAnyAuthority("LOJISTA")
+					.requestMatchers("/opcoes-cardapio/**")
 						.hasAnyAuthority("LOJISTA")	
-				.anyRequest().authenticated())
+				.anyRequest().authenticated())			
 			.sessionManagement(manager -> 
 				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider()).addFilterBefore(
                     filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)
-			.cors(c -> urlBasedCorsConfigurationSource());
+			.cors(c -> urlBasedCorsConfigurationSource())
+			.exceptionHandling((ex) -> {
+				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);				
+			});
 	    return http.build();
 	}
 	
