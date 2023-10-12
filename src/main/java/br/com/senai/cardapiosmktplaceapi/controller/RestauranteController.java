@@ -23,43 +23,48 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.base.Preconditions;
 
 import br.com.senai.cardapiosmktplaceapi.entity.Categoria;
+import br.com.senai.cardapiosmktplaceapi.entity.Restaurante;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
-import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
 import br.com.senai.cardapiosmktplaceapi.service.CategoriaService;
+import br.com.senai.cardapiosmktplaceapi.service.RestauranteService;
 import jakarta.transaction.Transactional;
 
 @RestController
-@RequestMapping("/categorias")
-public class CategoriaController {
+@RequestMapping("/restaurantes")
+public class RestauranteController {
 
 	@Autowired
 	private MapConverter converter;
 	
 	@Autowired
+	@Qualifier("restauranteServiceProxy")
+	private RestauranteService service;
+	
+	@Autowired
 	@Qualifier("categoriaServiceProxy")
-	private CategoriaService service;	
+	private CategoriaService categoriaService;
 	
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> inserir(
 			@RequestBody 
-			Categoria categoria) {
-		Preconditions.checkArgument(!categoria.isPersistida(), 
-				"A categoria não pode possuir id informado");
-		Categoria categoriaSalva = service.salvar(categoria);
+			Restaurante restaurante) {
+		Preconditions.checkArgument(!restaurante.isPersistido(), 
+				"O restaurante não pode possuir id informado");
+		Restaurante restauranteSalvo = service.salvar(restaurante);
 		return ResponseEntity.created(URI.create(
-				"/categorias/id/" + categoriaSalva.getId())).build();
+				"/restaurantes/id/" + restauranteSalvo.getId())).build();
 	}
 	
 	@Transactional
 	@PutMapping
 	public ResponseEntity<?> alterar(
 			@RequestBody 
-			Categoria categoria) {
-		Preconditions.checkArgument(categoria.isPersistida(), 
-				"O id da categoria é obrigatório para atualização");
-		Categoria categoriaAtualizada = service.salvar(categoria);
-		return ResponseEntity.ok(converter.toJsonMap(categoriaAtualizada));
+			Restaurante restaurante) {
+		Preconditions.checkArgument(restaurante.isPersistido(), 
+				"O id do restaurante é obrigatório para atualização");
+		Restaurante restauranteAtualizado = service.salvar(restaurante);
+		return ResponseEntity.ok(converter.toJsonMap(restauranteAtualizado));
 	}
 	
 	@Transactional
@@ -78,26 +83,24 @@ public class CategoriaController {
 	public ResponseEntity<?> excluirPor(
 			@PathVariable("id")
 			Integer id){
-		Categoria categoriaExcluida = service.excluirPor(id);
-		return ResponseEntity.ok(converter.toJsonMap(categoriaExcluida));
+		Restaurante restauranteExcluido = service.buscarPor(id);
+		return ResponseEntity.ok(converter.toJsonMap(restauranteExcluido));
 	}
 	
 	@GetMapping("/id/{id}")
 	public ResponseEntity<?> buscarPor(
 			@PathVariable("id") 
 			Integer id) {
-		Categoria categoriaEncontrada = service.buscarPor(id);
-		return ResponseEntity.ok(converter.toJsonMap(categoriaEncontrada));
+		Restaurante restauranteEncontrado = service.buscarPor(id);
+		return ResponseEntity.ok(converter.toJsonMap(restauranteEncontrado));
 	}
 	
 	@GetMapping
 	public ResponseEntity<?> listarPor(
 			@RequestParam(name = "nome")
 			String nome, 
-			@RequestParam(name = "status")
-			Status status, 
-			@RequestParam(name = "tipo")
-			TipoDeCategoria tipo,
+			@RequestParam(name = "id-categoria")
+			Integer idDaCategoria,
 			@RequestParam(name = "pagina")
 			Optional<Integer> pagina){		
 		Pageable paginacao = null;
@@ -106,10 +109,9 @@ public class CategoriaController {
 		}else {
 			paginacao = PageRequest.of(0, 15);
 		}
-		Page<Categoria> categorias = service.listarPor(nome, status, tipo, paginacao);
-		return ResponseEntity.ok(converter.toJsonList(categorias));
+		Categoria categoria = categoriaService.buscarPor(idDaCategoria);
+		Page<Restaurante> restaurantes = service.listarPor(nome, categoria, paginacao);
+		return ResponseEntity.ok(converter.toJsonList(restaurantes));
 	}
-	
-	
 	
 }
