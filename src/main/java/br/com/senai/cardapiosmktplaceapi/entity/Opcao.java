@@ -38,7 +38,7 @@ public class Opcao {
 	@EqualsAndHashCode.Include
 	private Integer id;
 	
-	@Size(max = 100, message = "O nome da opção não deve conter mais de 250 caracteres")
+	@Size(min = 3, max = 100, message = "O nome da opção não deve conter entre 3 e 100 caracteres")
 	@NotBlank(message = "O nome da opção é obrigatório")
 	@Column(name = "nome")
 	private String nome;
@@ -74,8 +74,20 @@ public class Opcao {
 	@NotNull(message = "O restaurante é obrigatório")
 	private Restaurante restaurante;
 	
+	@Column(name = "foto")
+	private byte[] foto;
+	
 	public Opcao() {
 		this.status = Status.A;
+	}
+	
+	public boolean isPossuiFoto() {
+		return getFoto() != null;
+	}
+	
+	@Transient
+	public boolean isPersistida() {
+		return getId() != null && getId() > 0;
 	}
 	
 	@Transient
