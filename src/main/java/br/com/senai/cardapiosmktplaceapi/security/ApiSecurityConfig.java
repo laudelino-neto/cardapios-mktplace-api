@@ -74,9 +74,9 @@ public class ApiSecurityConfig {
 		.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests((request) -> 
 				request
-					.requestMatchers("/auth/**")
+					.requestMatchers("/auth/**", "/opcoes/id/*/foto/**")
 						.permitAll()
-					.requestMatchers(HttpMethod.POST, "/cardapios/**")					
+					.requestMatchers(HttpMethod.POST, "/cardapios/**")
 						.hasAnyAuthority("LOJISTA")
 					.requestMatchers(HttpMethod.PUT, "/cardapios/**")					
 						.hasAnyAuthority("LOJISTA")
