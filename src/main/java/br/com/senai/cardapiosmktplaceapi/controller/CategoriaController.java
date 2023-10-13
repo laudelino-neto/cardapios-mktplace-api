@@ -38,8 +38,7 @@ public class CategoriaController {
 	@Autowired
 	@Qualifier("categoriaServiceProxy")
 	private CategoriaService service;	
-	
-	
+		
 	@PostMapping
 	@Transactional
 	public ResponseEntity<?> inserir(
@@ -110,7 +109,5 @@ public class CategoriaController {
 		Page<Categoria> categorias = service.listarPor(nome, status, tipo, paginacao);
 		return ResponseEntity.ok(converter.toJsonList(categorias));
 	}
-	
-	
 	
 }

@@ -2,6 +2,7 @@ package br.com.senai.cardapiosmktplaceapi.exception;
 
 import java.util.Map;
 
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,6 +39,13 @@ public class HandlerErrorDefault {
 		String atributo = ide.getPath().get(ide.getPath().size() - 1).getFieldName();		
 		String msgDeErro = "O atributo '" + atributo + "' possui formato inválido";
 	    return criarMapDeErro(ErroDaApi.FORMATO_INVALIDO, msgDeErro);
+	}
+	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(SizeLimitExceededException.class)
+	public Map<String, Object> handle(SizeLimitExceededException see){
+		return criarMapDeErro(ErroDaApi.TIPO_PARAMETRO_INVALIDO, 
+				"O tamanho do arquivo ultrapassa o limite estabelecido");
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
