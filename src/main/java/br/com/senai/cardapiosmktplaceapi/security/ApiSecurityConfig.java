@@ -114,6 +114,8 @@ public class ApiSecurityConfig {
 					.requestMatchers("/categorias/**")
 						.hasAnyAuthority("LOJISTA")
 					.requestMatchers("/opcoes-cardapio/**")
+						.hasAnyAuthority("LOJISTA")
+					.requestMatchers("/opcoes/**")
 						.hasAnyAuthority("LOJISTA")	
 				.anyRequest().authenticated())			
 			.sessionManagement(manager -> 
