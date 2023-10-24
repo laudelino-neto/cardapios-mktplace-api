@@ -40,9 +40,9 @@ public class GerenciadorDeTokenJwt {
     private Claims extrairDetalhesDo(String tokenGerado) {
     	return Jwts.parserBuilder()
     			.setSigningKey(getChaveDeAssinatura())
-                .build()
-                .parseClaimsJws(tokenGerado)
-                .getBody();
+    			.build()
+    			.parseClaimsJws(tokenGerado)
+    			.getBody();
     }
     
     public String extrairLoginDo(String tokenGerado) {

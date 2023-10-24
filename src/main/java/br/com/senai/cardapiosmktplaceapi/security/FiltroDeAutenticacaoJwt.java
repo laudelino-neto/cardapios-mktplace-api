@@ -33,6 +33,7 @@ public class FiltroDeAutenticacaoJwt extends OncePerRequestFilter{
 		String authHeader = request.getHeader("Authorization");
 		String token = null;
 		String login = null;
+		
 		boolean isHeaderAuthorizantionPresente = authHeader != null 
 				&& authHeader.startsWith("Bearer ");
 		
@@ -53,7 +54,7 @@ public class FiltroDeAutenticacaoJwt extends OncePerRequestFilter{
 		}
 		
 		filterChain.doFilter(request, response);
-		
+
 	}
 
 }

@@ -11,7 +11,6 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -28,6 +27,7 @@ import br.com.senai.cardapiosmktplaceapi.exception.ConverterException;
 import br.com.senai.cardapiosmktplaceapi.exception.ErroDaApi;
 import br.com.senai.cardapiosmktplaceapi.exception.IntegracaoException;
 import br.com.senai.cardapiosmktplaceapi.exception.RegistroNaoEncontradoException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
@@ -52,8 +52,8 @@ public class HandlerErrorDefault {
 	}	
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(CredentialsExpiredException.class)
-	public Map<String, Object> handle(CredentialsExpiredException eje){
+	@ExceptionHandler(ExpiredJwtException.class)
+	public Map<String, Object> handle(ExpiredJwtException eje){
 		return errorConverter.criarMapDeErro(ErroDaApi.TOKEN_EXPIRADO, 
 				"Token fora da validade (expirado)");
 	}

@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import br.com.senai.cardapiosmktplaceapi.exception.handler.AcessoNaoAutorizadoHandler;
+import br.com.senai.cardapiosmktplaceapi.exception.handler.FalhaDeAutenticacaoCustomizada;
 import br.com.senai.cardapiosmktplaceapi.service.impl.CredencialDeAcessoServiceImpl;
 
 @Configuration
@@ -37,6 +38,9 @@ public class ApiSecurityConfig {
 	
 	@Autowired
 	private AcessoNaoAutorizadoHandler acessoNaoAutorizadoHandler;
+	
+	@Autowired
+	private FalhaDeAutenticacaoCustomizada falhaDeAutenticacaoCustomizada;
 
 	@Bean
     public PasswordEncoder passwordEncoder(){
@@ -93,7 +97,6 @@ public class ApiSecurityConfig {
 	    return new CorsFilter(source);	    	   
 	    
 	}
-
 	
 	@Bean	
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -133,7 +136,8 @@ public class ApiSecurityConfig {
 			.authenticationProvider(authenticationProvider()).addFilterBefore(
                     filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling((ex) -> {
-				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);				
+				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);
+				ex.authenticationEntryPoint(falhaDeAutenticacaoCustomizada);
 			});
 	    return http.build();
 	}
