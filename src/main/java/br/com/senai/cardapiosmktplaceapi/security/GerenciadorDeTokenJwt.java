@@ -3,11 +3,14 @@ package br.com.senai.cardapiosmktplaceapi.security;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import br.com.senai.cardapiosmktplaceapi.service.impl.CredencialDeAcessoServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,14 +26,23 @@ public class GerenciadorDeTokenJwt {
     @Value("${spring.jwt.ttl-in-millis}")
     private int ttlInMillis;
     
+    @Autowired
+    private CredencialDeAcessoServiceImpl service;
+    
     private Key getChaveDeAssinatura(){
         byte[] keyByte = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyByte);
     }
 
     public String gerarTokenPor(String login) {
+    	
+    	UserDetails usuario = service.loadUserByUsername(login);
+    	
+    	Map<String, Object> claims = new HashMap<String, Object>();
+    	claims.put("papel", usuario.getAuthorities().toArray()[0].toString());
+    	
     	return Jwts.builder()
-                .setClaims(new HashMap<String, Object>())
+                .setClaims(claims)
                 .setSubject(login)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ttlInMillis))
