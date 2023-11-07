@@ -90,8 +90,6 @@ public class RestauranteServiceImpl implements RestauranteService {
 				"Não existe restaurante para o id informado");
 		Preconditions.checkArgument(restauranteEncontrado.isAtivo(), 
 				"O restaurante está inativo");
-		//Remove a foto para que o objeto possua menos dados na memória
-		restauranteEncontrado.setFoto(null);
 		return restauranteEncontrado;
 	}
 

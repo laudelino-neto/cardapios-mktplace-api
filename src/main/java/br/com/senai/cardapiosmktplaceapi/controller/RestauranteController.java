@@ -97,6 +97,8 @@ public class RestauranteController {
 			@PathVariable("id") 
 			Integer id) {
 		Restaurante restauranteEncontrado = service.buscarPor(id);
+		//Remove a foto para que o objeto possua menos dados na memória
+		restauranteEncontrado.setFoto(null);
 		return ResponseEntity.ok(converter.toJsonMap(restauranteEncontrado));
 	}
 	
