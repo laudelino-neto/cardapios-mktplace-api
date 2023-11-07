@@ -7,10 +7,8 @@ import org.springframework.validation.annotation.Validated;
 import br.com.senai.cardapiosmktplaceapi.entity.Categoria;
 import br.com.senai.cardapiosmktplaceapi.entity.Restaurante;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 @Validated
 public interface RestauranteService {
@@ -27,8 +25,6 @@ public interface RestauranteService {
 			Status status);
 	
 	public Page<Restaurante> listarPor(
-			@Size(min = 3, message = "O nome para listagem deve conter 3 ou mais caracteres")
-			@NotBlank(message = "O nome para listagem não pode ser nulo")
 			String nome,
 			@NotNull(message = "A categoria para listagem não pode ser nula")
 			Categoria categoria,

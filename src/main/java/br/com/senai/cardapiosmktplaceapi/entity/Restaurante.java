@@ -60,8 +60,16 @@ public class Restaurante {
 	@Column(name = "status")
 	private Status status;
 	
+	@Column(name = "foto")
+	private byte[] foto;
+	
 	public Restaurante() {
 		this.status = Status.A;
+	}
+	
+	@Transient
+	public boolean isPossuiFoto() {
+		return getFoto() != null;
 	}
 	
 	@Transient

@@ -18,14 +18,14 @@ public interface RestaurantesRepository extends JpaRepository<Restaurante, Integ
 			"SELECT r "
 			+ "FROM Restaurante r "
 			+ "JOIN FETCH r.categoria "
-			+ "WHERE Upper(r.nome) LIKE Upper(:nome) "
+			+ "WHERE (:nome IS NULL OR Upper(r.nome) LIKE Upper(:nome)) "
 			+ "AND r.categoria = :categoria "
 			+ "ORDER BY r.nome ",
 			countQuery = 
 				"SELECT Count(r) "
 				+ "FROM Restaurante r "
-				+ "WHERE Upper(r.nome) LIKE Upper(:nome) "
-				+ "AND r.status = :status ")
+				+ "WHERE (:nome IS NULL OR Upper(r.nome) LIKE Upper(:nome)) "
+				+ "AND r.categoria = :categoria ")
 	public Page<Restaurante> listarPor(String nome, 
 			Categoria categoria, Pageable paginacao);
 	

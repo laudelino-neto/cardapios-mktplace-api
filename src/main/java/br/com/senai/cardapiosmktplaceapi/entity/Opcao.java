@@ -81,6 +81,7 @@ public class Opcao {
 		this.status = Status.A;
 	}
 	
+	@Transient
 	public boolean isPossuiFoto() {
 		return getFoto() != null;
 	}

@@ -153,7 +153,7 @@ public class OpcaoController {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(opcaoEncontrada.getFoto());
 		}
 		
-		ClassPathResource imgFile = new ClassPathResource("imagens/sem_imagem.jpg");
+		ClassPathResource imgFile = new ClassPathResource("imagens/registro_sem_imagem.jpg");
         byte[] foto = StreamUtils.copyToByteArray(imgFile.getInputStream());
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(foto);
 

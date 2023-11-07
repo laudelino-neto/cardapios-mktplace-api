@@ -1,5 +1,7 @@
 package br.com.senai.cardapiosmktplaceapi.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -62,9 +64,25 @@ public class RestauranteServiceImpl implements RestauranteService {
 
 	@Override
 	public Page<Restaurante> listarPor(String nome, Categoria categoria, Pageable paginacao) {
-		return repository.listarPor("%" + nome + "%", categoria, paginacao);
+		String filtroPorNome = null;
+		boolean isFiltroPorNomeInformado = nome != null && !nome.isBlank();		
+		if (isFiltroPorNomeInformado) {
+			Preconditions.checkArgument(nome.length() >= 3, 
+					"O nome deve conter ao menos 3 caracteres para listagem");
+			filtroPorNome = "%" + nome + "%";
+		}		
+		Page<Restaurante> pagina = repository.listarPor(filtroPorNome, categoria, paginacao);
+		//Remove as fotos para que a listagem possua menos dados na memória
+		this.removerFotosDos(pagina.getContent());
+		return pagina;
 	}
 	
+	private void removerFotosDos(List<Restaurante> restaurantes) {
+		for (Restaurante restaurante : restaurantes) {
+			restaurante.setFoto(null);
+		}
+	}
+
 	@Override
 	public Restaurante buscarPor(Integer id) {
 		Restaurante restauranteEncontrado = repository.buscarPor(id);
@@ -72,6 +90,8 @@ public class RestauranteServiceImpl implements RestauranteService {
 				"Não existe restaurante para o id informado");
 		Preconditions.checkArgument(restauranteEncontrado.isAtivo(), 
 				"O restaurante está inativo");
+		//Remove a foto para que o objeto possua menos dados na memória
+		restauranteEncontrado.setFoto(null);
 		return restauranteEncontrado;
 	}
 
