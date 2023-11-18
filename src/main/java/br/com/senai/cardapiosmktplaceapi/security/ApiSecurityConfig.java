@@ -1,7 +1,6 @@
 package br.com.senai.cardapiosmktplaceapi.security;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import br.com.senai.cardapiosmktplaceapi.exception.handler.AcessoNaoAutorizadoHandler;
 import br.com.senai.cardapiosmktplaceapi.exception.handler.FalhaDeAutenticacaoCustomizada;
@@ -62,40 +60,17 @@ public class ApiSecurityConfig {
     }
 	
 	@Bean
-	public CorsFilter corsFilter() {
-		
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    
-	    final CorsConfiguration config = new CorsConfiguration();
-	    
-	    config.setAllowCredentials(true);
-	    
-	    config.setAllowedOriginPatterns(Collections.singletonList("*"));
-	    
-	    config.setAllowedHeaders(Arrays.asList(
-	    		"Access-Control-Allow-Headers",
-				"Access-Control-Allow-Origin", 				
-				"Access-Control-Request-Method", 
-	    		"Access-Control-Request-Headers",
-	    		"Origin","Cache-Control", 
-	    		"Content-Type", "Authorization", 
-	    		"Access-Control-Allow-Headers"));
-	    
-	    config.setExposedHeaders(Arrays.asList(
-	    		"Access-Control-Allow-Headers",
-	    		"Access-Control-Allow-Origin",
-	    		"Access-Control-Allow-Origin",
-				"Authorization", "x-xsrf-token", "Access-Control-Allow-Headers",
-	    		"Origin","Accept", "X-Requested-With", "Location",
-	    		"Content-Type", "Access-Control-Request-Method",
-	    		"Access-Control-Request-Headers"));
-	    
-	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	    
-	    source.registerCorsConfiguration("/**", config);	    
-	    
-	    return new CorsFilter(source);	    	   
-	    
+	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+		//Configuração válida para o cors da aplicação
+	    CorsConfiguration corsConfiguration = new CorsConfiguration();
+	    corsConfiguration.applyPermitDefaultValues(); 
+	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+	    corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+	    corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+	    corsConfiguration.setExposedHeaders(Arrays.asList("*"));
+	    UrlBasedCorsConfigurationSource ccs = new UrlBasedCorsConfigurationSource();
+	    ccs.registerCorsConfiguration("/**", corsConfiguration);
+	    return ccs;
 	}
 	
 	@Bean	
@@ -135,6 +110,7 @@ public class ApiSecurityConfig {
 				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider()).addFilterBefore(
                     filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)
+			.cors(c -> urlBasedCorsConfigurationSource())
 			.exceptionHandling((ex) -> {
 				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);
 				ex.authenticationEntryPoint(falhaDeAutenticacaoCustomizada);
