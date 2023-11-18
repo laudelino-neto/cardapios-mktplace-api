@@ -107,20 +107,31 @@ public class RestauranteController {
 			@RequestParam(name = "nome")
 			Optional<String> nome, 
 			@RequestParam(name = "id-categoria")
-			Integer idDaCategoria,
+			Optional<Integer> filtroPorIdDaCategoria,
 			@RequestParam(name = "pagina")
-			Optional<Integer> pagina){		
+			Optional<Integer> pagina){
+		
 		Pageable paginacao = null;
+		
 		if (pagina.isPresent()) {
 			paginacao = PageRequest.of(pagina.get(), 15);
 		}else {
 			paginacao = PageRequest.of(0, 15);
 		}
+
 		String filtroPorNome = nome.isPresent() ? nome.get() : null;
-		Categoria categoria = categoriaService.buscarPor(idDaCategoria);
+
+		Categoria categoria = null;
+
+		if (filtroPorIdDaCategoria.isPresent()) {		
+			categoria = categoriaService.buscarPor(filtroPorIdDaCategoria.get());
+		}
+
 		Page<Restaurante> restaurantes = service.listarPor(
 				filtroPorNome, categoria, paginacao);
+
 		return ResponseEntity.ok(converter.toJsonList(restaurantes));
+
 	}
 	
 	@PostMapping("/id/{id}/upload")

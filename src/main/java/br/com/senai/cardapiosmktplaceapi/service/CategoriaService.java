@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import br.com.senai.cardapiosmktplaceapi.entity.Categoria;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.Status;
 import br.com.senai.cardapiosmktplaceapi.entity.enums.TipoDeCategoria;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -27,12 +26,9 @@ public interface CategoriaService {
 			Status status);
 	
 	public Page<Categoria> listarPor(
-			@Size(min = 3, message = "O nome para listagem deve conter 3 ou mais caracteres")
-			@NotBlank(message = "O nome para listagem não pode ser nulo")
-			String nome,
-			@NotNull(message = "O status para listagem não pode ser nulo")
-			Status status, 
-			@NotNull(message = "O tipo para listagem não pode ser nulo")
+			@Size(min = 3, message = "O nome para listagem deve conter 3 ou mais caracteres")			
+			String nome,			
+			Status status, 			
 			TipoDeCategoria tipo,
 			Pageable paginacao);
 	

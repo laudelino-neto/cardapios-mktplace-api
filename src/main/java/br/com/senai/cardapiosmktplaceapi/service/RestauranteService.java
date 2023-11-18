@@ -26,7 +26,6 @@ public interface RestauranteService {
 	
 	public Page<Restaurante> listarPor(
 			String nome,
-			@NotNull(message = "A categoria para listagem não pode ser nula")
 			Categoria categoria,
 			Pageable paginacao);
 	

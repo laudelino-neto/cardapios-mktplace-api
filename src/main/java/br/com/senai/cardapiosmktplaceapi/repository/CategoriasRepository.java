@@ -17,16 +17,16 @@ public interface CategoriasRepository extends JpaRepository<Categoria, Integer>{
 	@Query(value = 
 			"SELECT c "
 			+ "FROM Categoria c "
-			+ "WHERE Upper(c.nome) LIKE Upper(:nome) "
-			+ "AND c.status = :status "
-			+ "AND c.tipo = :tipo "
+			+ "WHERE (:nome IS NULL OR Upper(c.nome) LIKE Upper(:nome)) "
+			+ "AND (:status IS NULL OR c.status = :status) "
+			+ "AND (:tipo IS NULL OR c.tipo = :tipo) "
 			+ "ORDER BY c.nome ",
 			countQuery = 
 				"SELECT Count(c) "
 				+ "FROM Categoria c "
-				+ "WHERE Upper(c.nome) LIKE Upper(:nome) "
-				+ "AND c.status = :status "
-				+ "AND c.tipo = :tipo ")
+				+ "WHERE (:nome IS NULL OR Upper(c.nome) LIKE Upper(:nome)) "
+				+ "AND (:status IS NULL OR c.status = :status) "
+				+ "AND (:tipo IS NULL OR c.tipo = :tipo) ")
 	public Page<Categoria> listarPor(String nome, Status status, 
 			TipoDeCategoria tipo, Pageable paginacao);
 	

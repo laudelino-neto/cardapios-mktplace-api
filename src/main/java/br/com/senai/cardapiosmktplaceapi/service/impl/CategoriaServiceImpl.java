@@ -48,7 +48,13 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public Page<Categoria> listarPor(String nome, Status status, TipoDeCategoria tipo, Pageable paginacao) {
-		return repository.listarPor(nome + "%", status, tipo, paginacao);
+		
+		if (nome != null) {
+			nome += "%";
+		}
+		
+		return repository.listarPor(nome, status, tipo, paginacao);
+
 	}
 
 	@Override

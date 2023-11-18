@@ -93,11 +93,11 @@ public class CategoriaController {
 	@GetMapping
 	public ResponseEntity<?> listarPor(
 			@RequestParam(name = "nome")
-			String nome, 
+			Optional<String> filtroDeNome, 
 			@RequestParam(name = "status")
-			Status status, 
+			Optional<Status> filtroDeStatus, 
 			@RequestParam(name = "tipo")
-			TipoDeCategoria tipo,
+			Optional<TipoDeCategoria> filtroDoTipo,
 			@RequestParam(name = "pagina")
 			Optional<Integer> pagina){		
 		Pageable paginacao = null;
@@ -106,7 +106,15 @@ public class CategoriaController {
 		}else {
 			paginacao = PageRequest.of(0, 15);
 		}
+		
+		String nome = filtroDeNome.isPresent() ? filtroDeNome.get() : null;
+		
+		Status status = filtroDeStatus.isPresent() ? filtroDeStatus.get() : null;
+		
+		TipoDeCategoria tipo = filtroDoTipo.isPresent() ? filtroDoTipo.get() : null;
+		
 		Page<Categoria> categorias = service.listarPor(nome, status, tipo, paginacao);
+		
 		return ResponseEntity.ok(converter.toJsonList(categorias));
 	}
 	
