@@ -21,7 +21,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.com.senai.cardapiosmktplaceapi.exception.handler.AcessoNaoAutorizadoHandler;
-import br.com.senai.cardapiosmktplaceapi.exception.handler.FalhaDeAutenticacaoCustomizada;
 import br.com.senai.cardapiosmktplaceapi.service.impl.CredencialDeAcessoServiceImpl;
 
 @Configuration
@@ -113,7 +112,6 @@ public class ApiSecurityConfig {
 			.cors(c -> urlBasedCorsConfigurationSource())
 			.exceptionHandling((ex) -> {
 				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);
-				ex.authenticationEntryPoint(falhaDeAutenticacaoCustomizada);
 			});
 	    return http.build();
 	}
