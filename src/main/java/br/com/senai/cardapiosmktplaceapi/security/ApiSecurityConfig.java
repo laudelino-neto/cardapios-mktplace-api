@@ -35,9 +35,6 @@ public class ApiSecurityConfig {
 	
 	@Autowired
 	private AcessoNaoAutorizadoHandler acessoNaoAutorizadoHandler;
-	
-	@Autowired
-	private FalhaDeAutenticacaoCustomizada falhaDeAutenticacaoCustomizada;
 
 	@Bean
     public PasswordEncoder passwordEncoder(){
