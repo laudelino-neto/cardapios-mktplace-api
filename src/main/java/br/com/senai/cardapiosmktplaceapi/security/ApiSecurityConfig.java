@@ -57,6 +57,7 @@ public class ApiSecurityConfig {
 	
 	@Bean
 	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+		//Configuração válida para o cors da aplicação
 	    CorsConfiguration corsConfiguration = new CorsConfiguration();
 	    corsConfiguration.applyPermitDefaultValues(); 
 	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
