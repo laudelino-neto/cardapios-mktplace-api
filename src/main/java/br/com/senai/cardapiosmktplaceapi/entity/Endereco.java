@@ -3,6 +3,7 @@ package br.com.senai.cardapiosmktplaceapi.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -27,5 +28,9 @@ public class Endereco {
 	
 	@Column(name = "complemento")
 	private String complemento;
+	
+	@NotEmpty(message = "O cep é obrigatório")
+	@Size(max = 15, message = "O cep não pode possuir mais de 15 digitos")
+	private String cep;
 	
 }

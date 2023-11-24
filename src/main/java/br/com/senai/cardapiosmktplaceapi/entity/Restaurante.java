@@ -64,10 +64,6 @@ public class Restaurante {
 	@Column(name = "foto")
 	private byte[] foto;
 	
-	@NotEmpty(message = "O cep é obrigatório")
-	@Size(max = 15, message = "O cep não pode possuir mais de 15 digitos")
-	private String cep;
-	
 	public Restaurante() {
 		this.status = Status.A;
 	}
