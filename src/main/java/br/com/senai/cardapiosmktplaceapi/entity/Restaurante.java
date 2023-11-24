@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -62,6 +63,10 @@ public class Restaurante {
 	
 	@Column(name = "foto")
 	private byte[] foto;
+	
+	@NotEmpty(message = "O cep é obrigatório")
+	@Size(max = 15, message = "O cep não pode possuir mais de 15 digitos")
+	private String cep;
 	
 	public Restaurante() {
 		this.status = Status.A;
