@@ -58,7 +58,7 @@ public class RestauranteServiceImpl implements RestauranteService {
 		Preconditions.checkNotNull(restauranteEncontrado, 
 				"Não existe restaurante para o id informado");
 		Preconditions.checkArgument(restauranteEncontrado.getStatus() != status, 
-				"O status já está salvo para a categoria");
+				"O status já está salvo para a restaurante");
 		this.repository.atualizarPor(id, status);
 	}
 
