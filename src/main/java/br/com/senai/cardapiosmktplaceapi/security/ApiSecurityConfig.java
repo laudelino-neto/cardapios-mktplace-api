@@ -59,10 +59,11 @@ public class ApiSecurityConfig {
 	@Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.applyPermitDefaultValues(); 
+        corsConfiguration.applyPermitDefaultValues();         
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
 	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-	    corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-	    corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+	    corsConfiguration.setAllowedOriginPatterns(Arrays.asList("*"));
 	    corsConfiguration.setExposedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
@@ -71,7 +72,7 @@ public class ApiSecurityConfig {
 	
 	@Bean	
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http		
+		http				
 		.csrf(csrf -> csrf.disable())		
 			.authorizeHttpRequests((request) -> 
 				request
@@ -101,7 +102,8 @@ public class ApiSecurityConfig {
 						.hasAnyAuthority("LOJISTA")	
 					.requestMatchers("/restaurantes/**")					
 						.hasAnyAuthority("CLIENTE", "LOJISTA")	
-				.anyRequest().authenticated())			
+				.anyRequest().authenticated())
+			.cors(c -> corsFilter())
 			.sessionManagement(manager -> 
 				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider()).addFilterBefore(
