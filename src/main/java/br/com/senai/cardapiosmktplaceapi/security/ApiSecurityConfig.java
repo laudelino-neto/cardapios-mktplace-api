@@ -19,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import br.com.senai.cardapiosmktplaceapi.exception.handler.AcessoNaoAutorizadoHandler;
 import br.com.senai.cardapiosmktplaceapi.service.impl.CredencialDeAcessoServiceImpl;
@@ -56,23 +57,22 @@ public class ApiSecurityConfig {
     }
 	
 	@Bean
-	public UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
-		//Configuração válida para o cors da aplicação
-	    CorsConfiguration corsConfiguration = new CorsConfiguration();
-	    corsConfiguration.applyPermitDefaultValues(); 
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.applyPermitDefaultValues(); 
 	    corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
 	    corsConfiguration.setAllowedMethods(Arrays.asList("*"));
 	    corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
 	    corsConfiguration.setExposedHeaders(Arrays.asList("*"));
-	    UrlBasedCorsConfigurationSource ccs = new UrlBasedCorsConfigurationSource();
-	    ccs.registerCorsConfiguration("/**", corsConfiguration);
-	    return ccs;
-	}
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(source);
+    }
 	
 	@Bean	
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http		
-		.csrf(csrf -> csrf.disable())
+		.csrf(csrf -> csrf.disable())		
 			.authorizeHttpRequests((request) -> 
 				request
 					.requestMatchers("/auth/**", "/opcoes/id/*/foto/**")
@@ -106,7 +106,6 @@ public class ApiSecurityConfig {
 				manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authenticationProvider(authenticationProvider()).addFilterBefore(
                     filtroDeAutenticacao, UsernamePasswordAuthenticationFilter.class)
-			.cors(c -> urlBasedCorsConfigurationSource())
 			.exceptionHandling((ex) -> {
 				ex.accessDeniedHandler(acessoNaoAutorizadoHandler);
 			});
